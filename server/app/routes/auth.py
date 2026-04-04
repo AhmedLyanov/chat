@@ -9,8 +9,9 @@ auth_student = APIRouter()
 async def login(data: User):
 
     # получаем данные из объекта
-    username = data.username
     email = data.email
+    password = data.password
 
-    return f"Пришел логин: {username}, почта: {email}"
+
+    return f"Пришли: почта: {email}, {password}"
 
