@@ -28,9 +28,18 @@ export default function AuthPage() {
         headers: { "Content-Type": "application/json" }, 
         body: JSON.stringify(formData),
       });
+
+      
       const data = await response.json();
-      setSuccess("Успешный вход!");
-      console.log(data);
+
+      if (data){
+        setSuccess("Успешный вход!");
+        console.log(data);
+      }
+      else if (!data) {
+        setError("Неверный email или пароль");
+      }
+
     } catch (err) {
       setError("Ошибка соединения");
       console.error(err);
