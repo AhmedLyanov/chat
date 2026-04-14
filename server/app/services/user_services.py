@@ -18,8 +18,8 @@ def create_user(student_id: str, email: str, password: str):
     except sqlite3.IntegrityError:
         return False  # Пользователь с таким email или student_id уже существует
     finally:
-        conn.close()
         cursor.close()
+        conn.close()
 
 def filter_by_email(email: str):
     conn = get_db()

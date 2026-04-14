@@ -32,11 +32,18 @@ export default function AuthPage() {
       
       const data = await response.json();
 
-      if (data){
+      if (response.ok){
         setSuccess("Успешный вход!");
         console.log(data);
+
+        window.location.replace('http://localhost:5173/');
+
       }
-      else if (!data) {
+
+      else if (response.status === 422){
+        setError("Почта должна содержать @magas.ithub.ru!");
+      }
+      else{
         setError("Неверный email или пароль");
       }
 

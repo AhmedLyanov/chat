@@ -24,6 +24,7 @@ def sign_in(EMAIL, PASSWORD):
             "password": PASSWORD
         }
     }
+
     response = requests.post(API_URL, json={"query": query, "variables": variables})
     if response.status_code == 200:
         result = response.json()
