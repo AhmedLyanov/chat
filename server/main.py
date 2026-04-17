@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from app.database.connections import init_db  # импортируем функцию инициализации БД
 from app.routes.auth import auth_student  # импортируем роутер из папки routes
+from app.routes.profile import profile_router  # Add profile router to main.py
 from fastapi.middleware.cors import CORSMiddleware
 
 # Инициализация БД
@@ -23,3 +24,4 @@ app.add_middleware(
 
 # Подключаем роутеры
 app.include_router(auth_student)  # подключаем auth роутер
+app.include_router(profile_router)

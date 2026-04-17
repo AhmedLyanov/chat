@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Logo from "../shared/assets/Logo.png";
 
 export default function AuthPage() {
@@ -6,6 +6,41 @@ export default function AuthPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  // Проверка сессии при загрузке страницы
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      verifySession(token);
+    }
+  }, []);
+
+  const verifySession = async (token) => {
+    try {
+      console.log("Проверяю сессию с токеном:", token.substring(0, 20) + "...");
+      
+      const response = await fetch("http://127.0.0.1:8000/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
+      });
+
+      const data = await response.json();
+      console.log("Ответ сервера:", response.status, data);
+      
+      if (response.ok && data.authenticated) {
+        console.log("✅ Сессия валидна! Пользователь:", data.email);
+        // Сессия валидна - перенаправляем на главную
+        window.location.replace("http://localhost:5173/");
+      } else {
+        console.log("❌ Сессия невалидна, удаляю токен");
+        localStorage.removeItem("token");
+      }
+    } catch (err) {
+      console.error("❌ Ошибка при проверке сессии:", err);
+      localStorage.removeItem("token");
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,10 +69,14 @@ export default function AuthPage() {
 
       if (response.ok){
         setSuccess("Успешный вход!");
-        console.log(data);
-
-        window.location.replace('http://localhost:5173/');
-
+        // Сохраняем токен в localStorage
+        localStorage.setItem("token", data.token);
+        console.log("Токен сохранен:", data.token);
+        
+        // Небольшая задержка перед редиректом чтобы убедиться что токен сохранен
+        setTimeout(() => {
+          window.location.replace('http://localhost:5173/');
+        }, 300);
       }
 
       else if (response.status === 422){

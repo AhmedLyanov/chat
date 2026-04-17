@@ -17,6 +17,7 @@ def init_db():
             student_id TEXT UNIQUE NOT NULL,
             email TEXT UNIQUE NOT NULL,
             password TEXT UNIQUE NOT NULL,
+            token_session TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)

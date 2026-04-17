@@ -36,8 +36,7 @@ def sign_in(EMAIL, PASSWORD):
         # Проверяем, получили ли мы токен
         if result.get("data") and result["data"].get("signIn"):
     
-            return True
-      
+            return result      
     else:
         print(f"Ошибка HTTP: {response.status_code}")
         print(response.text)

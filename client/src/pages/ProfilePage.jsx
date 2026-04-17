@@ -11,25 +11,41 @@ const ProfilePage = () => {
 
   const fetchUserData = async () => {
     setLoading(true);
+    
+    const token = localStorage.getItem("token");
+    
+    if (!token) {
+      setError('Не авторизован');
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await fetch('http://127.0.0.1:8000/profile', {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` 
+        },
       });
 
       if (response.ok) {
         const data = await response.json();
-        const firstName = data.first_name || data.name?.split(' ')[0] || 'Пользователь';
-        const lastName = data.last_name || data.name?.split(' ')[1] || '';
-        const fullName = `${firstName} ${lastName}`.trim();
-        const initials = (firstName[0] || '') + (lastName[0] || '');
+        
+        // data приходит с бэкенда: { student_id, email }
+        const firstName = data.student_id || 'Пользователь';
+        const email = data.email || '';
+        const initials = firstName[0]?.toUpperCase() || '??';
         
         setUser({
-          initials: initials.toUpperCase() || '??',
-          name: fullName || 'Пользователь',
-          handle: data.handle || '@user',
+          initials: initials,
+          name: firstName,
+          handle: email,
         });
+      } else if (response.status === 401) {
+        // Токен протух или неверный
+        localStorage.removeItem("token");
+        setError('Сессия истекла, войдите снова');
       } else {
         setError('Ошибка загрузки профиля');
       }
