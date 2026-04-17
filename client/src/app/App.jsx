@@ -1,13 +1,15 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import HomePage from '../pages/HomePage';
 import AuthPage from '../pages/AuthPage';
+import ProfilePage from '../pages/ProfilePage';
 import Header from '../widgets/header/index';
 import BottomNavigation from '../widgets/board/index';
 
 function Layout({ children }) {
   const location = useLocation();
-  const hideHeader = location.pathname === '/authentication';
-  const hideBottomNav = location.pathname === '/authentication';
+  const hiddenPaths = ['/authentication', '/profile']; 
+  const hideHeader = hiddenPaths.includes(location.pathname);
+  const hideBottomNav = hiddenPaths.includes(location.pathname);
   
   return (
     <div className="App">
@@ -27,7 +29,7 @@ function AppContent() {
         <Route path="/" element={<HomePage />} />
         <Route path="/authentication" element={<AuthPage />} />
         <Route path="/contacts" element={<div>Контакты</div>} />
-        <Route path="/profile" element={<div>Профиль</div>} />
+        <Route path="/profile" element={<ProfilePage />} />
       </Routes>
     </Layout>
   );
